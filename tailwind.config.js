@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
@@ -19,14 +19,8 @@ module.exports = {
       textColor: {
         DEFAULT: '#000000',
       },
-      screens:{
-        '2xl': '1320px',
-      },
-      fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
-        dellarespira: ['Della Respira', 'serif'],
-      },
     },
   },
-  plugins: [],
-}
+};
+
+export default config;
