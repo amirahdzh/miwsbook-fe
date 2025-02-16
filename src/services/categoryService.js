@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://laravue-bookworld.vercel.app/api/v1/category';
+const API_URL = 'https://laravue-bookworld.vercel.app/api/v1/category';
 
 export const getCategories = async () => {
   try {

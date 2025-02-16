@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://laravue-bookworld.vercel.app/api/v1/auth";
+const API_URL = "https://laravue-bookworld.vercel.app/api/v1/auth";
 
 export const register = async (
   name,

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://laravue-bookworld.vercel.app/api/v1/borrow';
+const API_URL = 'https://laravue-bookworld.vercel.app/api/v1/borrow';
 
 /**
  * Mengirimkan permintaan peminjaman buku.
