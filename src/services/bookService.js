@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://laravue-bookworld.vercel.app/api/v1/book";
+const API_URL = "https://laravue-bookworld.vercel.app/public/api/v1/book";
 
 // Fungsi untuk mendapatkan header otorisasi
 const getAuthHeaders = () => {
