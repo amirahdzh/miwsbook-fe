@@ -1,25 +1,28 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'https://laravue-bookworld.vercel.app/api/v1/role';
+const API_URL = "http://localhost:8000/api/v1/role";
 
 // Setup Axios to include the token in the headers dynamically
 const instance = axios.create({
   baseURL: API_URL,
 });
 
-instance.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
+instance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-}, error => {
-  return Promise.reject(error);
-});
+);
 
 export const getRoles = async () => {
   try {
-    const response = await instance.get('/');
+    const response = await instance.get("/");
     return response.data;
   } catch (error) {
     console.error("Error fetching roles:", error);
@@ -29,7 +32,7 @@ export const getRoles = async () => {
 
 export const createRole = async (role) => {
   try {
-    const response = await instance.post('/', role);
+    const response = await instance.post("/", role);
     return response.data;
   } catch (error) {
     console.error("Error creating role:", error);

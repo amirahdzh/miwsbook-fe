@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://laravue-bookworld.vercel.app/api/v1/auth";
+const API_URL = "http://localhost:8000/api/v1/auth";
 
 export const register = async (
   name,
@@ -70,11 +70,11 @@ export const logout = async () => {
 
 export const isAuthenticated = () => {
   // Check for token or user data in localStorage or sessionStorage
-  return !!localStorage.getItem('token');
+  return !!localStorage.getItem("token");
 };
 
 // Function to get the current user ID
 export const getUserId = () => {
   // Implement logic to get user ID, e.g., from localStorage or a Vuex store
-  return localStorage.getItem('user_id');
+  return localStorage.getItem("user_id");
 };

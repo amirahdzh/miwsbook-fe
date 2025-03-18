@@ -1,18 +1,18 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'https://laravue-bookworld.vercel.app/api/v1';
+const API_URL = "http://localhost:8000/api/v1";
 
 // Function to get the auth token
 const getAuthToken = () => {
-  return localStorage.getItem('token');
+  return localStorage.getItem("token");
 };
 
 // Function to get headers with auth token
 const getHeaders = () => {
   return {
     headers: {
-      Authorization: `Bearer ${getAuthToken()}`
-    }
+      Authorization: `Bearer ${getAuthToken()}`,
+    },
   };
 };
 

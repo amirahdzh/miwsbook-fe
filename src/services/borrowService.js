@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'https://laravue-bookworld.vercel.app/api/v1/borrow';
+const API_URL = "http://localhost:8000/api/v1/borrow";
 
 /**
  * Mengirimkan permintaan peminjaman buku.
@@ -13,28 +13,34 @@ export const borrowBook = async (bookId, returnDate, userId) => {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    throw new Error('Authentication token is missing.');
+    throw new Error("Authentication token is missing.");
   }
 
   try {
     const formData = new FormData();
-    formData.append('book_id', bookId);
-    formData.append('return_date', returnDate);
-    formData.append('user_id', userId);
+    formData.append("book_id", bookId);
+    formData.append("return_date", returnDate);
+    formData.append("user_id", userId);
 
     const response = await axios.post(API_URL, formData, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json',
-        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
 
     return response.data;
   } catch (error) {
     // Log error details for debugging
-    console.error('Error details:', error.response ? error.response.data : error.message);
-    throw new Error('Failed to borrow book: ' + (error.response?.data?.message || error.message));
+    console.error(
+      "Error details:",
+      error.response ? error.response.data : error.message
+    );
+    throw new Error(
+      "Failed to borrow book: " +
+        (error.response?.data?.message || error.message)
+    );
   }
 };
 
@@ -43,17 +49,17 @@ export const getBorrowedBooks = async () => {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    throw new Error('Authentication token is missing.');
+    throw new Error("Authentication token is missing.");
   }
   try {
     const response = await axios.get(`${API_URL}/my-borrow`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching borrowed books:', error);
+    console.error("Error fetching borrowed books:", error);
     throw error;
   }
 };
@@ -63,17 +69,17 @@ export const getBorrows = async () => {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    throw new Error('Authentication token is missing.');
+    throw new Error("Authentication token is missing.");
   }
   try {
     const response = await axios.get(API_URL, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching borrows:', error);
+    console.error("Error fetching borrows:", error);
     throw error;
   }
 };
@@ -83,18 +89,18 @@ export const updateBorrow = async (id, borrowData) => {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    throw new Error('Authentication token is missing.');
+    throw new Error("Authentication token is missing.");
   }
   try {
     const response = await axios.put(`${API_URL}/${id}`, borrowData, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      }
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('Error updating borrow:', error);
+    console.error("Error updating borrow:", error);
     throw error;
   }
 };
@@ -104,17 +110,17 @@ export const deleteBorrow = async (id) => {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    throw new Error('Authentication token is missing.');
+    throw new Error("Authentication token is missing.");
   }
   try {
     const response = await axios.delete(`${API_URL}/${id}`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('Error deleting borrow:', error);
+    console.error("Error deleting borrow:", error);
     throw error;
   }
 };

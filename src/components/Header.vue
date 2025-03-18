@@ -8,7 +8,7 @@
         to="/"
         class="text-2xl font-bold text-primary font-dellarespira"
       >
-        Book World
+        {{ appName.toUpperCase() }}
       </RouterLink>
 
       <!-- Navigation -->
@@ -36,7 +36,7 @@
             class="p-2 border border-gray-200 focus:outline-none rounded-lg"
           />
           <button
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 focus:outline-none"
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-dark focus:outline-none"
             @click="searchBooks"
           >
             <Icon icon="mdi:magnify" class="w-6 h-6" />
@@ -81,10 +81,10 @@
             :class="[
               'flex items-center text-base px-4 py-2 rounded-md',
               isDropdownOpen
-                ? 'bg-teal-600 text-white'
+                ? 'bg-secondary text-white'
                 : 'bg-primary text-white',
             ]"
-            class="hover:bg-teal-600 focus:outline-none"
+            class="hover:bg-secondary focus:outline-none"
           >
             <Icon icon="mdi:account" class="w-6 h-6" />
             <span class="hidden md:block ml-2">{{ user.name }}</span>
@@ -125,7 +125,7 @@
         <RouterLink
           v-else
           to="/login"
-          class="flex items-center text-base bg-primary text-white hover:bg-teal-600 px-4 py-2 rounded-md"
+          class="flex items-center text-base bg-primary text-white hover:bg-secondary px-4 py-2 rounded-md"
         >
           <Icon icon="mdi:login" class="w-6 h-6" />
           <span class="hidden md:block ml-2">Login</span>
@@ -247,6 +247,9 @@ import { Icon } from "@iconify/vue";
 import { searchBooks as searchBooksService } from "../services/bookService";
 import LoginModal from "../components/LoginModal.vue";
 import ConfirmModal from "../components/ConfirmModal.vue";
+import { inject } from "vue";
+
+const appName = inject("appName");
 
 const isMenuOpen = ref(false);
 const isSearchOpen = ref(false);
@@ -355,8 +358,7 @@ const closeLoginPrompt = () => {
 
 const handleClickOutside = (event) => {
   const isClickInsideDropdown =
-    event.target.closest(".relative") || 
-    event.target.closest(".absolute");
+    event.target.closest(".relative") || event.target.closest(".absolute");
 
   if (!isClickInsideDropdown) {
     isDropdownOpen.value = false;
@@ -377,22 +379,6 @@ const handleClickOutside = (event) => {
   color: inherit;
   cursor: pointer;
   padding: 0;
-}
-
-.nav-item button.nav-button:hover {
-  color: #4dc0b5;
-}
-
-.text-dark {
-  color: #333;
-}
-
-.text-primary {
-  color: #4dc0b5;
-}
-
-.bg-primary {
-  background-color: #4dc0b5;
 }
 
 .rounded-md {

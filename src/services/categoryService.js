@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'https://laravue-bookworld.vercel.app/api/v1/category';
+const API_URL = "http://localhost:8000/api/v1/category";
 
 export const getCategories = async () => {
   try {
@@ -14,10 +14,10 @@ export const getCategories = async () => {
 
 export const addCategory = async (Category) => {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const response = await axios.post(API_URL, Category, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
@@ -29,10 +29,10 @@ export const addCategory = async (Category) => {
 
 export const updateCategory = async (id, Category) => {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const response = await axios.put(`${API_URL}/${id}`, Category, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
@@ -44,10 +44,10 @@ export const updateCategory = async (id, Category) => {
 
 export const deleteCategory = async (id) => {
   try {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const response = await axios.delete(`${API_URL}/${id}`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     return response.data;
@@ -70,7 +70,9 @@ export const fetchCategory = async (id) => {
 
 export const getBooksByCategory = async (categoryId) => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/v1/category/${categoryId}/books`);
+    const response = await axios.get(
+      `http://localhost:8000/api/v1/category/${categoryId}/books`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching movies by Category:", error);
@@ -87,4 +89,3 @@ export const getBooksByCategory = async (categoryId) => {
 //     throw error;
 //   }
 // };
-

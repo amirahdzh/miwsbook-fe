@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://laravue-bookworld.vercel.app/public/api/v1/book";
+const API_URL = "http://localhost:8000/api/v1/book";
 
 // Fungsi untuk mendapatkan header otorisasi
 const getAuthHeaders = () => {
@@ -18,7 +18,7 @@ const getAuthHeaders = () => {
 export const getBooks = async (page = 1, perPage = 20) => {
   try {
     const response = await axios.get(API_URL, {
-      params: { page, per_page: perPage }
+      params: { page, per_page: perPage },
     });
     return response.data;
   } catch (error) {
@@ -26,7 +26,6 @@ export const getBooks = async (page = 1, perPage = 20) => {
     throw error;
   }
 };
-
 
 export const getBookById = async (id) => {
   try {
@@ -97,13 +96,16 @@ export const deleteBook = async (id) => {
 
 export const searchBooks = async (query) => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/v1/books/search`, {
-      params: {
-        query
+    const response = await axios.get(
+      `http://localhost:8000/api/v1/books/search`,
+      {
+        params: {
+          query,
+        },
       }
-    });
+    );
     return response;
   } catch (error) {
-    throw new Error('Error searching books');
+    throw new Error("Error searching books");
   }
 };
