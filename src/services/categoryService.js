@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/api/v1/category";
+const API_URL = "https://amiwspace.my.id/api/v1/category";
 
 export const getCategories = async () => {
   try {

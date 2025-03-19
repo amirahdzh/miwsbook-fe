@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/api/v1/role";
+const API_URL = "https://amiwspace.my.id/api/v1/role";
 
 // Setup Axios to include the token in the headers dynamically
 const instance = axios.create({

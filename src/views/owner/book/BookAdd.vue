@@ -31,20 +31,25 @@
         ></textarea>
       </div>
       <div class="mb-4">
-        <label for="category" class="block text-sm font-medium text-gray-700"
-          >Category</label
-        >
+        <label for="categories" class="block text-sm font-medium text-gray-700">
+          Categories
+        </label>
         <select
-          v-model="book.category_id"
-          id="category"
+          v-model="book.categories"
+          id="categories"
           class="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-          required
+          multiple
         >
-          <option v-for="category in categories" :key="category.id" :value="category.id">
+          <option
+            v-for="category in categories"
+            :key="category.id"
+            :value="category.id"
+          >
             {{ category.name }}
           </option>
         </select>
       </div>
+
       <div class="mb-4">
         <label for="stock" class="block text-sm font-medium text-gray-700"
           >Stock</label
@@ -138,7 +143,6 @@ const handleSubmit = async () => {
     }
   }
 };
-
 
 const goBack = () => {
   router.back();

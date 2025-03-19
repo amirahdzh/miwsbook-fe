@@ -2,7 +2,7 @@
   <section id="home">
     <div class="container py-20">
       <div class="flex flex-wrap">
-        <div class="w-full self-center px-8 lg:w-1/2">
+        <div class="w-full self-center px-8 lg:w-1/2 py-20">
           <h1 class="text-base text-secondary md:text-xl">
             🌙 Explore My Realm of Dreams & Pages
             <span

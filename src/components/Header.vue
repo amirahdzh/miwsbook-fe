@@ -14,10 +14,10 @@
       <!-- Navigation -->
       <nav class="hidden md:flex space-x-8 items-center">
         <RouterLink to="/books" class="nav-item">
-          <button class="nav-button">Books</button>
+          <button class="nav-button">Library</button>
         </RouterLink>
         <RouterLink to="/categories" class="nav-item">
-          <button class="nav-button">Categories</button>
+          <button class="nav-button">Discussions</button>
         </RouterLink>
         <button @click="handleMyBorrowsClick" class="nav-button">
           My Borrows

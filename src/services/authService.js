@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8000/api/v1/auth";
+const API_URL = "https://amiwspace.my.id/api/v1/auth";
 
 export const register = async (
   name,
