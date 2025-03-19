@@ -22,7 +22,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('/img/auth-bg.jpg');
+  background-image: url("/img/auth-bg3.jpg");
   background-size: cover;
   background-position: center;
   filter: blur(3px);

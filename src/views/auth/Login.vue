@@ -5,7 +5,7 @@
         to="/"
         class="block text-center mb-6 text-primary text-3xl font-bold font-dellarespira"
       >
-        Book World
+        {{ appName.toUpperCase() }}
       </RouterLink>
       <h2 class="text-2xl font-bold text-center">Login</h2>
       <form @submit.prevent="login">
@@ -36,7 +36,7 @@
         <button
           type="submit"
           :disabled="isLoading"
-          class="w-full py-3 text-white bg-primary rounded-lg hover:bg-teal-600 flex items-center justify-center space-x-2"
+          class="w-full py-3 text-white bg-primary rounded-lg hover:opacity-80 flex items-center justify-center space-x-2"
         >
           <span v-if="isLoading">
             <Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
@@ -66,6 +66,9 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { login as loginUser } from "../../services/authService";
 import { Icon } from "@iconify/vue";
+import { inject } from "vue";
+
+const appName = inject("appName");
 
 const email = ref("");
 const password = ref("");

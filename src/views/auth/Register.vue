@@ -1,8 +1,13 @@
 <template>
   <div class="min-h-screen flex items-center justify-center relative">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md relative z-10">
-      <RouterLink to="/" class="block text-center mb-6 text-primary text-3xl font-bold font-dellarespira">
-        Book World
+    <div
+      class="bg-white p-8 rounded-lg shadow-md w-full max-w-md relative z-10"
+    >
+      <RouterLink
+        to="/"
+        class="block text-center mb-6 text-primary text-3xl font-bold font-dellarespira"
+      >
+        {{ appName }}
       </RouterLink>
       <h2 class="text-2xl font-bold mb-6 text-center">Register</h2>
       <form @submit.prevent="handleRegister">
@@ -37,7 +42,9 @@
           />
         </div>
         <div class="mb-6">
-          <label for="password_confirmation" class="block text-gray-700">Confirm Password</label>
+          <label for="password_confirmation" class="block text-gray-700"
+            >Confirm Password</label
+          >
           <input
             type="password"
             id="password_confirmation"
@@ -49,7 +56,7 @@
         <button
           type="submit"
           :disabled="isLoading"
-          class="w-full bg-primary text-white p-2 rounded hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-center space-x-2"
+          class="w-full bg-primary text-white p-2 rounded hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary flex items-center justify-center space-x-2"
         >
           <span v-if="isLoading">
             <Icon icon="mdi:loading" class="w-6 h-6 animate-spin" />
@@ -59,7 +66,9 @@
       </form>
       <p class="my-4 text-center text-gray-600">
         Already have an account?
-        <RouterLink to="/login" class="text-primary hover:underline">Login</RouterLink>
+        <RouterLink to="/login" class="text-primary hover:underline"
+          >Login</RouterLink
+        >
       </p>
       <RouterLink
         to="/"
@@ -77,6 +86,9 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
 import { register } from "../../services/authService";
+import { inject } from "vue";
+
+const appName = inject("appName");
 
 const name = ref("");
 const email = ref("");
@@ -93,7 +105,12 @@ const handleRegister = async () => {
 
   isLoading.value = true; // Start loading
   try {
-    const response = await register(name.value, email.value, password.value, password_confirmation.value);
+    const response = await register(
+      name.value,
+      email.value,
+      password.value,
+      password_confirmation.value
+    );
 
     if (response.status === 201) {
       const { user, token } = response.data;
