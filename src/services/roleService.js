@@ -1,28 +1,9 @@
-import axios from "axios";
+import { privateApi } from "../utils/api";
 
-const API_URL = "https://amiwspace.my.id/api/v1/role";
-
-// Setup Axios to include the token in the headers dynamically
-const instance = axios.create({
-  baseURL: API_URL,
-});
-
-instance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
+// ✅ Get All Roles (Butuh Autentikasi)
 export const getRoles = async () => {
   try {
-    const response = await instance.get("/");
+    const response = await privateApi.get("/role");
     return response.data;
   } catch (error) {
     console.error("Error fetching roles:", error);
@@ -30,9 +11,10 @@ export const getRoles = async () => {
   }
 };
 
-export const createRole = async (role) => {
+// ✅ Create Role (Butuh Autentikasi)
+export const createRole = async (roleData) => {
   try {
-    const response = await instance.post("/", role);
+    const response = await privateApi.post("/role", roleData);
     return response.data;
   } catch (error) {
     console.error("Error creating role:", error);
@@ -40,9 +22,10 @@ export const createRole = async (role) => {
   }
 };
 
-export const updateRole = async (id, role) => {
+// ✅ Update Role (Butuh Autentikasi)
+export const updateRole = async (id, roleData) => {
   try {
-    const response = await instance.put(`/${id}`, role);
+    const response = await privateApi.put(`/role/${id}`, roleData);
     return response.data;
   } catch (error) {
     console.error("Error updating role:", error);
@@ -50,10 +33,10 @@ export const updateRole = async (id, role) => {
   }
 };
 
+// ✅ Delete Role (Butuh Autentikasi)
 export const deleteRole = async (id) => {
   try {
-    const response = await instance.delete(`/${id}`);
-    return response.data;
+    await privateApi.delete(`/role/${id}`);
   } catch (error) {
     console.error("Error deleting role:", error);
     throw error;

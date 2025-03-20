@@ -8,7 +8,7 @@
         to="/"
         class="text-2xl font-bold text-primary font-dellarespira"
       >
-        {{ appName.toUpperCase() }}
+        {{ appName }}
       </RouterLink>
 
       <!-- Navigation -->
@@ -16,75 +16,31 @@
         <RouterLink to="/books" class="nav-item">
           <button class="nav-button">Library</button>
         </RouterLink>
-        <RouterLink to="/categories" class="nav-item">
-          <button class="nav-button">Discussions</button>
+        <RouterLink to="/feeds" class="nav-item">
+          <button class="nav-button">Feeds</button>
         </RouterLink>
-        <button @click="handleMyBorrowsClick" class="nav-button">
+        <!-- <button @click="handleMyBorrowsClick" class="nav-button">
           My Borrows
-        </button>
+        </button> -->
       </nav>
 
       <!-- Search and User Info -->
       <div class="flex items-center space-x-4">
         <!-- Search Bar -->
-        <div class="relative hidden lg:flex items-center">
-          <input
-            v-model="searchQuery"
-            @input="searchBooks"
-            type="text"
-            placeholder="Search..."
-            class="p-2 border border-gray-200 focus:outline-none rounded-lg"
-          />
-          <button
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-dark focus:outline-none"
-            @click="searchBooks"
-          >
-            <Icon icon="mdi:magnify" class="w-6 h-6" />
-          </button>
-          <!-- Desktop Search Results -->
-          <ul
-            v-if="searchResults.length"
-            ref="searchResultsRef"
-            class="absolute top-full left-0 mt-2 w-full bg-white shadow-lg rounded-lg z-20"
-          >
-            <li
-              v-for="book in searchResults"
-              :key="book.id"
-              class="flex items-center py-2 border-b border-gray-200"
-            >
-              <img
-                :src="book.image"
-                alt="cover"
-                class="w-10 h-14 object-cover mr-2"
-              />
-              <RouterLink
-                :to="`/book/${book.id}`"
-                class="text-blue-500 hover:underline"
-              >
-                {{ book.title }}
-              </RouterLink>
-            </li>
-          </ul>
-        </div>
-        <!-- Mobile Search Toggle -->
-        <button
-          @click="toggleSearch"
-          class="block lg:hidden text-gray-600 focus:outline-none"
-        >
-          <Icon icon="mdi:magnify" class="w-6 h-6" />
-        </button>
+        <!-- Import Komponen Autocomplete -->
+        <AutocompleteSearch class="sm:block hidden" />
 
-        <!-- User Dropdown -->
-        <div class="relative" v-if="user && user.name">
+        <!-- User Dropdown  -->
+        <div class="relative hidden md:block" v-if="user && user.name">
           <button
             @click="toggleDropdown"
             :class="[
-              'flex items-center text-base px-4 py-2 rounded-md',
+              'flex items-center text-base px-4 py-2 rounded-md whitespace-nowrap',
               isDropdownOpen
-                ? 'bg-secondary text-white'
+                ? 'bg-primary bg-opacity-80 text-white'
                 : 'bg-primary text-white',
             ]"
-            class="hover:bg-secondary focus:outline-none"
+            class="hover:opacity-80 focus:outline-none"
           >
             <Icon icon="mdi:account" class="w-6 h-6" />
             <span class="hidden md:block ml-2">{{ user.name }}</span>
@@ -112,6 +68,16 @@
               <Icon icon="mdi:view-dashboard" class="w-6 h-6 mr-2" />
               Dashboard
             </RouterLink>
+            <RouterLink
+              v-if="isAuthenticated"
+              to="/my-borrows"
+              @click="toggleMenu"
+              class="flex items-center w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 focus:outline-none"
+            >
+              <Icon icon="mdi:book-check" class="w-6 h-6 mr-2" />
+              My Borrows
+            </RouterLink>
+
             <button
               @click="logout"
               class="flex items-center w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 focus:outline-none"
@@ -125,7 +91,7 @@
         <RouterLink
           v-else
           to="/login"
-          class="flex items-center text-base bg-primary text-white hover:bg-secondary px-4 py-2 rounded-md"
+          class="flex items-center text-base bg-primary text-white hover:opacity-80 px-4 py-2 rounded-md"
         >
           <Icon icon="mdi:login" class="w-6 h-6" />
           <span class="hidden md:block ml-2">Login</span>
@@ -151,20 +117,23 @@
           to="/"
           @click="toggleMenu"
           class="block text-base text-dark hover:text-primary"
-          >Home</RouterLink
         >
+          Home
+        </RouterLink>
         <RouterLink
           to="/books"
           @click="toggleMenu"
           class="block text-base text-dark hover:text-primary"
-          >Books</RouterLink
         >
+          Books
+        </RouterLink>
         <RouterLink
           to="/categories"
           @click="toggleMenu"
           class="block text-base text-dark hover:text-primary"
-          >Categories</RouterLink
         >
+          Categories
+        </RouterLink>
         <RouterLink
           v-if="isAuthenticated"
           to="/my-borrows"
@@ -173,58 +142,42 @@
         >
           My Borrows
         </RouterLink>
-        <!-- <RouterLink
+
+        <!-- User Dropdown (Mobile) -->
+        <div v-if="isAuthenticated" class="border-t pt-4">
+          <RouterLink
+            to="/profile"
+            @click="toggleMenu"
+            class="block px-4 py-2 text-dark hover:text-primary"
+          >
+            Profile
+          </RouterLink>
+          <RouterLink
+            v-if="isAdmin"
+            to="/owner/dashboard"
+            @click="toggleMenu"
+            class="block px-4 py-2 text-dark hover:text-primary"
+          >
+            Dashboard
+          </RouterLink>
+          <button
+            @click="logout"
+            class="flex items-center w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 focus:outline-none"
+          >
+            <Icon icon="mdi:logout" class="w-6 h-6 mr-2" />
+            Logout
+          </button>
+        </div>
+
+        <RouterLink
+          v-else
           to="/login"
           @click="toggleMenu"
-          class="text-base text-dark hover:text-primary flex items-center"
+          class="block px-4 py-2 text-dark hover:text-primary"
         >
-          <Icon icon="mdi:login" class="w-6 h-6 mr-2" />
           Login
-        </RouterLink> -->
+        </RouterLink>
       </nav>
-    </div>
-
-    <!-- Mobile Search -->
-    <div
-      v-if="isSearchOpen"
-      ref="mobileSearchResultsRef"
-      class="absolute top-full left-0 right-0 bg-white shadow-lg rounded-lg p-4 mt-2 lg:hidden"
-    >
-      <div class="relative">
-        <input
-          v-model="searchQuery"
-          @input="searchBooks"
-          type="text"
-          placeholder="Search..."
-          class="w-full p-2 border-b border-gray-200 focus:outline-none"
-        />
-        <button
-          class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 focus:outline-none"
-          @click="searchBooks"
-        >
-          <Icon icon="mdi:magnify" class="w-6 h-6" />
-        </button>
-      </div>
-      <!-- Display Mobile Search Results -->
-      <ul v-if="searchResults.length" class="mt-2 space-y-2">
-        <li
-          v-for="book in searchResults"
-          :key="book.id"
-          class="flex items-center"
-        >
-          <img
-            :src="book.image"
-            alt="cover"
-            class="w-10 h-14 object-cover mr-2"
-          />
-          <RouterLink
-            :to="`/book/${book.id}`"
-            class="text-blue-500 hover:underline"
-          >
-            {{ book.title }}
-          </RouterLink>
-        </li>
-      </ul>
     </div>
   </header>
 
@@ -248,6 +201,7 @@ import { searchBooks as searchBooksService } from "../services/bookService";
 import LoginModal from "../components/LoginModal.vue";
 import ConfirmModal from "../components/ConfirmModal.vue";
 import { inject } from "vue";
+import AutocompleteSearch from "@/components/AutoCompleteSearch.vue"; // Import komponen
 
 const appName = inject("appName");
 
@@ -258,8 +212,6 @@ const showLoginPrompt = ref(false);
 const user = ref(null);
 const searchQuery = ref("");
 const searchResults = ref([]);
-const searchResultsRef = ref(null);
-const mobileSearchResultsRef = ref(null);
 const router = useRouter();
 const isConfirmModalVisible = ref(false);
 

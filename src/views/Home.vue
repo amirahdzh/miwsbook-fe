@@ -1,7 +1,8 @@
 <template>
   <section id="home">
-    <div class="container py-20">
-      <div class="flex flex-wrap">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-18 py-20">
+      <div class="flex flex-wrap min-w-screen">
+        <!-- Bagian Kiri -->
         <div class="w-full self-center px-8 lg:w-1/2 py-20">
           <h1 class="text-base text-secondary md:text-xl">
             🌙 Explore My Realm of Dreams & Pages
@@ -9,115 +10,118 @@
               class="block font-bold text-dark text-3xl font-dellarespira lg:text-3xl xl:text-4xl mt-4"
             >
               📖 Welcome to
-              <span class="text-primary font-bold font-dellarespira"
-                >{{ appName }} &nbsp;</span
-              >– My Literary World
+              <span class="text-primary font-bold font-dellarespira">
+                {{ appName }}
+              </span>
+              - My Literary World
             </span>
           </h1>
+
           <p class="text-dark mt-4 leading-relaxed lg:text-lg">
             Step into my world of stories, book reviews, and hidden gems that
             shaped my journey. 🌿📚
           </p>
-          <div class="mt-8 flex items-center space-x-4">
-            <!-- Search Bar -->
-            <div class="relative flex-grow">
-              <input
-                v-model="searchQuery"
-                @input="searchBooks"
-                type="text"
-                placeholder="Search books..."
-                class="w-full p-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button
-                class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 focus:outline-none"
-                @click="searchBooks"
-              >
-                <Icon icon="mdi:magnify" class="w-6 h-6" />
-              </button>
-              <ul
-                v-if="searchResults.length > 0"
-                class="absolute bg-white shadow-lg rounded-md mt-2 w-full z-10"
-              >
-                <li
-                  v-for="book in searchResults"
-                  :key="book.id"
-                  @click="handleBookSelect(book.id)"
-                  class="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                >
-                  {{ book.title }}
-                </li>
-              </ul>
-            </div>
-            <!-- Button -->
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 mt-8">
+            <!-- Explore Feeds -->
+            <RouterLink
+              to="/feeds"
+              class="cta-button w-full max-w-[200px] font-medium px-5 py-2.5 text-center border-2 border-primary rounded-lg transition-all duration-300 ease-in-out animate-floating"
+            >
+              📖 My Latest Reads
+            </RouterLink>
+
+            <!-- Browse Collection -->
             <RouterLink
               to="/books"
-              class="text-base bg-primary text-white py-2 px-8 rounded-full hover:shadow-lg hover:opacity-80 transition duration-300 ease-in-out"
+              class="cta-button w-full max-w-[200px] px-5 py-2.5 font-medium text-center border-2 border-primary rounded-lg transition-all duration-300 ease-in-out animate-floating delay-500"
             >
-              View Collection
+              📚 My Library
             </RouterLink>
           </div>
         </div>
+
+        <!-- Bagian Kanan (Gambar) -->
         <div class="w-full self-end px-4 lg:w-1/2">
-          <div class="relative mt-10 lg:mt-9 lg:right-0">
-            <img src="/img/book.png" alt="Books" class="max-w-full mx-auto" />
-            <span
-              class="absolute -bottom-0 -z-10 left-1/2 -translate-x-1/2 md:scale-125"
-            >
-              <!-- <svg
-                width="600"
-                viewBox="0 0 200 200"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="#F48FB1"
-                  d="M25.1,-43.5C32,-39.4,36.8,-31.7,48.9,-23.9C61,-16,80.5,-8,79.4,-0.6C78.3,6.8,56.7,13.5,47.2,25.9C37.7,38.3,40.3,56.4,34.5,64.5C28.6,72.7,14.3,71.1,3,66C-8.4,60.8,-16.8,52.2,-22.3,43.9C-27.9,35.5,-30.6,27.4,-39,20.1C-47.4,12.8,-61.5,6.4,-66.1,-2.7C-70.7,-11.7,-65.8,-23.5,-60.4,-35.9C-55,-48.4,-49.1,-61.6,-39,-63.8C-28.8,-66,-14.4,-57.1,-2.7,-52.5C9.1,-47.9,18.1,-47.5,25.1,-43.5Z"
-                  transform="translate(100 100)"
-                />
-              </svg> -->
-            </span>
+          <div class="relative lg:right-0">
+            <img
+              src="/img/book.png"
+              alt="Books"
+              class="max-w-full mx-auto hover:scale-105 transition-transform duration-300 animate-fadeIn"
+            />
           </div>
         </div>
       </div>
     </div>
+
+    <hr />
+    <!-- Search Bar -->
+    <!-- <div class="flex justify-center my-6">
+      <AutocompleteSearch class="mr-5" />
+    </div> -->
   </section>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { searchBooks as searchBooksService } from "../services/bookService";
-import { Icon } from "@iconify/vue";
-
 import { inject } from "vue";
+import AutocompleteSearch from "@/components/AutoCompleteSearch.vue"; // Import komponen
 
 const appName = inject("appName");
-
-const searchQuery = ref("");
-const searchResults = ref([]);
-const router = useRouter();
-
-const searchBooks = async () => {
-  if (searchQuery.value.trim() === "") {
-    searchResults.value = [];
-    return;
-  }
-
-  try {
-    const results = await searchBooksService(searchQuery.value);
-    searchResults.value = results.data;
-  } catch (error) {
-    console.error("Error searching books:", error);
-    searchResults.value = [];
-  }
-};
-
-const handleBookSelect = (bookId) => {
-  router.push(`/book/${bookId}`);
-  searchQuery.value = "";
-  searchResults.value = [];
-};
 </script>
 
 <style scoped>
-/* Global styles here */
+/* Animasi Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Animasi Floating */
+@keyframes floating {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-floating {
+  animation: floating 3s ease-in-out infinite;
+}
+
+/* CTA Button Styling */
+
+.cta-button:hover {
+  /* box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2); */
+  transform: translateY(-3px);
+  background: linear-gradient(90deg, #f78da7, #ff5470);
+}
+
+/* Gradient Hover Effect */
+/* .cta-button.bg-secondary:hover {
+  background: linear-gradient(90deg, #f78da7, #ff5470);
+} */
+
+.cta-button.bg-primary:hover {
+  background: linear-gradient(90deg, #f78da7, #ff5470);
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
 </style>

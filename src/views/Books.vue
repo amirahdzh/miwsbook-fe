@@ -1,18 +1,38 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { getBooks, searchBooks } from "../services/bookService";
+import { getCategories, getBooksByCategory } from "../services/categoryService";
 import Spinner from "../components/Spinner.vue";
 import { Icon } from "@iconify/vue";
 
+const defaultBookImage = "/img/alkemis.jpg"; // Path gambar default
 const books = ref([]);
+const categories = ref([]);
+const selectedCategory = ref("all");
+const searchQuery = ref("");
 const loading = ref(true);
 const error = ref(null);
-const searchQuery = ref('');
 
-const fetchBooks = async (query = '') => {
+const fetchCategories = async () => {
   try {
-    loading.value = true;
-    const response = query ? await searchBooks(query) : await getBooks();
+    const response = await getCategories();
+    categories.value = response.data;
+  } catch (err) {
+    error.value = "Failed to load categories.";
+  }
+};
+
+const fetchBooks = async () => {
+  loading.value = true;
+  try {
+    let response;
+    if (selectedCategory.value === "all") {
+      response = searchQuery.value
+        ? await searchBooks(searchQuery.value)
+        : await getBooks();
+    } else {
+      response = await getBooksByCategory(selectedCategory.value);
+    }
     books.value = response.data;
   } catch (err) {
     error.value = "Failed to load books.";
@@ -21,25 +41,32 @@ const fetchBooks = async (query = '') => {
   }
 };
 
+// Filter kategori agar tidak ada kategori kosong
+const filteredCategories = computed(() =>
+  categories.value.filter((category) => category.name !== "No Category")
+);
+
+// Update kategori & ambil data
+const filterBooks = (categoryId) => {
+  selectedCategory.value = categoryId;
+  fetchBooks();
+};
+
+// Cari buku berdasarkan input
 const handleSearch = () => {
-  fetchBooks(searchQuery.value);
+  fetchBooks();
 };
 
 onMounted(() => {
+  fetchCategories();
   fetchBooks();
 });
 </script>
 
 <template>
   <div class="mt-20 mx-4 sm:mx-8 md:mx-16 lg:mx-24 mb-20">
-    <!-- Page Title -->
-    <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-primary">Books Collection</h1>
-      <!-- <p class="text-lg text-gray-600">Browse our collection of books</p> -->
-    </div>
-
     <!-- Search Bar -->
-    <div class="flex justify-center mb-8">
+    <div class="flex justify-center mb-6">
       <div class="relative flex-grow max-w-lg">
         <input
           v-model="searchQuery"
@@ -57,57 +84,113 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Loading and Error Handling -->
-    <div v-if="loading" class="flex justify-center items-center h-64">
-      <Spinner />
+    <!-- Tabs for Categories -->
+    <div class="flex flex-wrap justify-center mb-6 gap-2">
+      <button
+        @click="filterBooks('all')"
+        :class="[
+          'px-4 py-2',
+          selectedCategory === 'all'
+            ? 'bg-primary text-white'
+            : 'bg-gray-200 text-gray-700',
+        ]"
+        class="rounded-lg"
+      >
+        All
+      </button>
+      <button
+        v-for="category in filteredCategories"
+        :key="category.id"
+        @click="filterBooks(category.id)"
+        :class="[
+          'px-4 py-2',
+          selectedCategory === category.id
+            ? 'bg-primary text-white'
+            : 'bg-gray-200 text-gray-700',
+        ]"
+        class="rounded-lg"
+      >
+        {{ category.name }}
+      </button>
+    </div>
+
+    <!-- Loading & Error Handling -->
+    <div
+      v-if="loading"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8"
+    >
+      <div v-for="n in 10" :key="n" class="skeleton-card"></div>
     </div>
     <div v-else-if="error" class="text-center text-red-600">{{ error }}</div>
 
     <!-- Books Grid -->
-    <div
-      v-else
-      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8"
-    >
-      <!-- Book Cover -->
+    <div v-else>
+      <div v-if="books.length === 0" class="text-center text-gray-500 text-lg">
+        📚 Books Not Found
+      </div>
+
       <div
-        v-for="book in books"
-        :key="book.id"
-        class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
+        v-else
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8"
       >
-        <div class="aspect-w-16 aspect-h-10">
-          <RouterLink :to="`/book/${book.id}`">
-            <img
-              :src="book.image"
-              :alt="book.title"
-              class="w-full h-full object-cover"
-            />
-          </RouterLink>
+        <!-- Book Cover -->
+        <div
+          v-for="book in books"
+          :key="book.id"
+          class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
+        >
+          <div class="aspect-2-3">
+            <RouterLink :to="`/book/${book.id}`">
+              <img
+                :src="book.image ? book.image : defaultBookImage"
+                :alt="book.title"
+                class="w-full h-full object-cover"
+              />
+            </RouterLink>
+          </div>
         </div>
-        <!--
-        <div class="p-2 md:p-4">
-          <h2 class="text-sm md:text-md font-bold text-center text-dark">
-            {{ book.title }}
-          </h2>
-        </div> -->
-      </div> 
-      <!-- End Book Cover -->
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.aspect-w-16 {
+/* Placeholder Loading Effect */
+.skeleton-card {
+  background: #e0e0e0;
+  border-radius: 8px;
   width: 100%;
-  padding-bottom: 140%; /* 16:10 aspect ratio */
-  position: relative;
+  height: 0;
+  padding-bottom: 150%; /* 2:3 Aspect Ratio */
+  animation: pulse 1.5s infinite;
 }
 
-.aspect-w-16 img {
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Aspect ratio 2:3 */
+.aspect-2-3 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 150%;
+}
+
+.aspect-2-3 img {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
 .hover\:scale-105:hover {
@@ -119,5 +202,4 @@ onMounted(() => {
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 1rem;
 }
-
 </style>

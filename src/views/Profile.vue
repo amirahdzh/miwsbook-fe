@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 py-20">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
       <!-- Back Button -->
       <button
@@ -26,7 +26,9 @@
       <form @submit.prevent="handleUpdateProfile" class="space-y-6">
         <!-- Name -->
         <div class="form-group">
-          <label for="name" class="block text-gray-700 text-sm font-medium">Name</label>
+          <label for="name" class="block text-gray-700 text-sm font-medium"
+            >Name</label
+          >
           <input
             type="text"
             id="name"
@@ -37,7 +39,9 @@
         </div>
         <!-- Email -->
         <div class="form-group">
-          <label for="email" class="block text-gray-700 text-sm font-medium">Email</label>
+          <label for="email" class="block text-gray-700 text-sm font-medium"
+            >Email</label
+          >
           <input
             type="text"
             id="email"
@@ -49,7 +53,9 @@
         </div>
         <!-- Role -->
         <div class="form-group">
-          <label for="role" class="block text-gray-700 text-sm font-medium">Role</label>
+          <label for="role" class="block text-gray-700 text-sm font-medium"
+            >Role</label
+          >
           <input
             type="text"
             id="role"
@@ -61,7 +67,9 @@
         </div>
         <!-- Age -->
         <div class="form-group">
-          <label for="age" class="block text-gray-700 text-sm font-medium">Age</label>
+          <label for="age" class="block text-gray-700 text-sm font-medium"
+            >Age</label
+          >
           <input
             type="number"
             id="age"
@@ -72,7 +80,9 @@
         </div>
         <!-- Biodata -->
         <div class="form-group">
-          <label for="biodata" class="block text-gray-700 text-sm font-medium">Biodata</label>
+          <label for="biodata" class="block text-gray-700 text-sm font-medium"
+            >Biodata</label
+          >
           <textarea
             id="biodata"
             v-model="profile.biodata"
@@ -166,7 +176,9 @@ onMounted(getProfile);
   margin-bottom: 1.5rem;
 }
 
-input[type="text"], input[type="number"], textarea {
+input[type="text"],
+input[type="number"],
+textarea {
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   font-size: 0.875rem;
@@ -176,6 +188,4 @@ input[type="text"], input[type="number"], textarea {
 textarea {
   resize: vertical;
 }
-
-
 </style>

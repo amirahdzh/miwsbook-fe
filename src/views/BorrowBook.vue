@@ -5,7 +5,7 @@
       <div class="mb-4">
         <button
           @click="goBack"
-          class="text-primary p-2 rounded hover:text-teal-600"
+          class="text-primary p-2 rounded hover:opacity-80"
         >
           &larr; Back
         </button>
@@ -30,7 +30,7 @@
         </div>
         <RouterLink to="/books">
           <button
-            class="bg-secondary text-white font-bold px-4 py-2 rounded-full hover:bg-teal-600"
+            class="bg-secondary text-white font-bold px-4 py-2 rounded-full hover:opacity-80"
           >
             Change Book
           </button>
@@ -59,7 +59,7 @@
         <div class="flex justify-center">
           <button
             type="submit"
-            class="bg-primary text-white font-bold px-4 py-2 rounded-full hover:bg-teal-600"
+            class="bg-primary text-white font-bold px-4 py-2 rounded-full hover:opacity-80"
           >
             Borrow
           </button>
@@ -68,11 +68,11 @@
     </div>
 
     <!-- Search Book Modal -->
-    <SearchBookModal
+    <!-- <SearchBookModal
       :isVisible="isSearchModalVisible"
       @close="isSearchModalVisible = false"
       @select="handleBookSelect"
-    />
+    /> -->
   </div>
 </template>
 
@@ -82,7 +82,6 @@ import { useRoute, useRouter } from "vue-router";
 import { getBookById } from "../services/bookService";
 import { borrowBook } from "../services/borrowService";
 import { isAuthenticated, getUserId } from "../services/authService";
-import SearchBookModal from "../components/SearchBookModal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -137,9 +136,9 @@ const goBack = () => {
 };
 
 onMounted(() => {
-  const { book_id } = route.query;
-  if (book_id) {
-    fetchBook(book_id);
+  const { bookId } = route.query;
+  if (bookId) {
+    fetchBook(bookId);
   }
 });
 </script>
