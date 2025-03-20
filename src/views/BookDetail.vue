@@ -101,6 +101,83 @@
             }}
           </span>
         </div>
+        <!-- About the Author -->
+        <div v-if="book.authors?.length" class="mt-6">
+          <h1 class="text-2xl mb-6 font-bold font-dellarespira">
+            About the Author
+          </h1>
+          <div class="flex items-center mb-6">
+            <img
+              :src="book.authors?.[0]?.photo || '/img/miw.jpg'"
+              :alt="book.authors?.[0]?.name"
+              class="w-12 h-12 rounded-full object-cover mr-4"
+            />
+            <h2 class="text-2xl font-bold mb-2 font-dellarespira">
+              {{ book.authors?.[0]?.name || "Unknown Author" }}
+            </h2>
+          </div>
+          <p class="text-gray-700">
+            {{ truncatedAuthorDescription }}
+            <button
+              @click="toggleAuthorDetails"
+              class="text-primary font-semibold mt-2"
+            >
+              {{ showAuthorDetails ? "View Less" : "View More" }}
+            </button>
+          </p>
+        </div>
+
+        <hr class="mt-6" />
+
+        <!-- Rating and Review Section -->
+        <div class="mt-8">
+          <h1 class="text-2xl mb-6 font-bold font-dellarespira">
+            Ratings and Reviews
+          </h1>
+          <div class="flex justify-center">
+            <Icon icon="mdi:account-circle" width="80" class="text-primary" />
+          </div>
+
+          <!-- Profile Icon and Text -->
+          <div class="flex items-center justify-center mb-6">
+            <h2 class="text-center text-3xl">
+              What do
+              <span class="font-bold text-primary font-dellarespira">
+                you
+              </span>
+              think?
+            </h2>
+          </div>
+
+          <div class="flex items-center justify-center gap-4">
+            <button
+              @click="checkAuth"
+              class="bg-primary text-white font-bold px-4 py-2 rounded-full hover:opacity-80"
+            >
+              Write a Review
+            </button>
+            <div class="">
+              <div class="flex items-center" role="group" aria-label="Rating">
+                <button
+                  v-for="n in 5"
+                  :key="n"
+                  :class="{
+                    'text-yellow-500': n <= (hoverRating || rating),
+                    'text-gray-300': n > (hoverRating || rating),
+                    'cursor-pointer': true,
+                  }"
+                  class="text-3xl focus:outline-none"
+                  @mouseover="hoverRating = n"
+                  @mouseleave="hoverRating = 0"
+                  @click="updateRating(n)"
+                >
+                  <Icon icon="mdi:star" />
+                </button>
+              </div>
+              <h3 class="text-center">Rate this book</h3>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -115,7 +192,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getBookById } from "../services/bookService";
 import { isAuthenticated } from "../services/authService";
@@ -128,8 +205,18 @@ const route = useRoute();
 const router = useRouter();
 const book = ref({});
 const loading = ref(true);
+const error = ref(null);
 const showLoginModal = ref(false);
 const showShareModal = ref(false);
+const showDetails = ref(false);
+const showAuthorDetails = ref(false);
+const rating = ref(0);
+const hoverRating = ref(0);
+
+const truncatedAuthorDescription = computed(() => {
+  const desc = book.value.authors?.[0]?.bio || "No bio available.";
+  return showAuthorDetails.value ? desc : desc.slice(0, 100) + "...";
+});
 
 const fetchBook = async (id) => {
   loading.value = true;
@@ -152,6 +239,10 @@ const redirectToBorrowPage = () => {
 };
 
 const goBack = () => router.back();
+
+const toggleDetails = () => (showDetails.value = !showDetails.value);
+const toggleAuthorDetails = () =>
+  (showAuthorDetails.value = !showAuthorDetails.value);
 
 onMounted(() => fetchBook(route.params.id));
 </script>
