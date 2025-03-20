@@ -35,7 +35,7 @@
           <button
             @click="toggleDropdown"
             :class="[
-              'flex items-center text-base px-4 py-2 rounded-md',
+              'flex items-center text-base px-4 py-2 rounded-md whitespace-nowrap',
               isDropdownOpen
                 ? 'bg-primary bg-opacity-80 text-white'
                 : 'bg-primary text-white',
@@ -91,7 +91,7 @@
         <RouterLink
           v-else
           to="/login"
-          class="flex items-center text-base bg-primary text-white hover:bg-secondary px-4 py-2 rounded-md"
+          class="flex items-center text-base bg-primary text-white hover:opacity-80 px-4 py-2 rounded-md"
         >
           <Icon icon="mdi:login" class="w-6 h-6" />
           <span class="hidden md:block ml-2">Login</span>

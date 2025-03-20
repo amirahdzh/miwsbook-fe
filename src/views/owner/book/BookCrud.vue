@@ -42,18 +42,24 @@
         </thead>
         <tbody>
           <tr v-for="(book, index) in paginatedBooks" :key="book.id">
-            <td class="p-2 border-b">{{ (currentPage - 1) * perPage + index + 1 }}</td>
+            <td class="p-2 border-b">
+              {{ (currentPage - 1) * perPage + index + 1 }}
+            </td>
             <td class="p-2 border-b">
               <img
                 :src="book.image"
                 alt="Cover Book"
-                class=" object-cover w-20 h-32"
+                class="object-cover w-20 h-32"
               />
             </td>
             <td class="p-2 border-b">{{ book.title }}</td>
             <td class="p-2 border-b">
-              {{ book.category ? book.category.name : "N/A" }}
+              <span v-if="book.categories && book.categories.length">
+                {{ book.categories.map((cat) => cat.name).join(", ") }}
+              </span>
+              <span v-else>N/A</span>
             </td>
+
             <td class="p-2 border-b">
               {{ book.stock }}
             </td>
@@ -100,7 +106,10 @@
 <script setup>
 import { ref, onMounted, computed, inject } from "vue";
 import { useRouter } from "vue-router";
-import { getBooks, deleteBook as deleteBookService } from "../../../services/bookService";
+import {
+  getBooks,
+  deleteBook as deleteBookService,
+} from "../../../services/bookService";
 import { Icon } from "@iconify/vue";
 import Spinner from "../../../components/Spinner.vue";
 
@@ -110,11 +119,11 @@ const perPage = ref(5);
 const searchQuery = ref("");
 const router = useRouter();
 const sortOrder = ref({
-  title: 'asc',
-  category: '',
-  stock: ''
+  title: "asc",
+  category: "",
+  stock: "",
 });
-const isLoading = inject('isLoading');
+const isLoading = inject("isLoading");
 
 const fetchBooks = async () => {
   isLoading.value = true;
@@ -159,44 +168,46 @@ const searchBooks = () => {
 };
 
 const toggleSort = (key) => {
-  sortOrder.value[key] = sortOrder.value[key] === 'asc' ? 'desc' : 'asc';
-  Object.keys(sortOrder.value).forEach(k => {
-    if (k !== key) sortOrder.value[k] = '';
+  sortOrder.value[key] = sortOrder.value[key] === "asc" ? "desc" : "asc";
+  Object.keys(sortOrder.value).forEach((k) => {
+    if (k !== key) sortOrder.value[k] = "";
   });
 };
 
 const getSortIcon = (key) => {
-  if (sortOrder.value[key] === 'asc') return 'mdi:arrow-up';
-  if (sortOrder.value[key] === 'desc') return 'mdi:arrow-down';
-  return 'mdi:unfold-more-horizontal';
+  if (sortOrder.value[key] === "asc") return "mdi:arrow-up";
+  if (sortOrder.value[key] === "desc") return "mdi:arrow-down";
+  return "mdi:unfold-more-horizontal";
 };
 
 const sortedBooks = computed(() => {
   let sorted = [...books.value];
-  const key = Object.keys(sortOrder.value).find(k => sortOrder.value[k] !== '');
+  const key = Object.keys(sortOrder.value).find(
+    (k) => sortOrder.value[k] !== ""
+  );
   if (key) {
     sorted.sort((a, b) => {
       let compareA = a[key];
       let compareB = b[key];
-      
-      if (key === 'category') {
-        compareA = a.category ? a.category.name : '';
-        compareB = b.category ? b.category.name : '';
+
+      if (key === "category") {
+        compareA = a.category ? a.category.name : "";
+        compareB = b.category ? b.category.name : "";
       }
-      
-      if (key === 'stock') {
+
+      if (key === "stock") {
         compareA = a.stock;
         compareB = b.stock;
       }
 
-      if (sortOrder.value[key] === 'asc') {
+      if (sortOrder.value[key] === "asc") {
         return compareA > compareB ? 1 : -1;
       } else {
         return compareA < compareB ? 1 : -1;
       }
     });
   }
-  return sorted.filter(book =>
+  return sorted.filter((book) =>
     book.title.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });

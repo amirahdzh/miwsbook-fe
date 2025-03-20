@@ -1,37 +1,55 @@
-import axios from "axios";
+import { privateApi } from "../utils/api";
 
-const API_URL = "https://amiwspace.my.id/api/v1";
-
-// Function to get the auth token
-const getAuthToken = () => {
-  return localStorage.getItem("token");
+// ✅ Get All Users (Butuh Autentikasi)
+export const getUsers = async () => {
+  try {
+    const response = await privateApi.get("/users");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
 };
 
-// Function to get headers with auth token
-const getHeaders = () => {
-  return {
-    headers: {
-      Authorization: `Bearer ${getAuthToken()}`,
-    },
-  };
+// ✅ Get Users by Role ID (Butuh Autentikasi)
+export const getUsersByRole = async (roleId) => {
+  try {
+    const response = await privateApi.get(`/user/role/${roleId}`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching users by role:", error);
+    throw error;
+  }
 };
 
-export const getUsers = () => {
-  return axios.get(`${API_URL}/users`, getHeaders());
+// ✅ Update User (Butuh Autentikasi)
+export const updateUser = async (userId, userData) => {
+  try {
+    const response = await privateApi.put(`/user/${userId}`, userData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
 };
 
-export const getUsersByRole = (roleId) => {
-  return axios.get(`${API_URL}/user/role/${roleId}`, getHeaders());
+// ✅ Delete User (Butuh Autentikasi)
+export const deleteUser = async (userId) => {
+  try {
+    await privateApi.delete(`/user/${userId}`);
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw error;
+  }
 };
 
-export const updateUser = (userId, data) => {
-  return axios.put(`${API_URL}/user/${userId}`, data, getHeaders());
-};
-
-export const deleteUser = (userId) => {
-  return axios.delete(`${API_URL}/user/${userId}`, getHeaders());
-};
-
-export const addUser = (data) => {
-  return axios.post(`${API_URL}/user`, data, getHeaders());
+// ✅ Add New User (Butuh Autentikasi)
+export const addUser = async (userData) => {
+  try {
+    const response = await privateApi.post("/user", userData);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding user:", error);
+    throw error;
+  }
 };
