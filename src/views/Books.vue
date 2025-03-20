@@ -5,8 +5,7 @@ import { getCategories, getBooksByCategory } from "../services/categoryService";
 import Spinner from "../components/Spinner.vue";
 import { Icon } from "@iconify/vue";
 
-const defaultBookImage = ref("/img/alkemis.jpg"); // Ubah path sesuai dengan lokasi gambar default
-
+const defaultBookImage = "/img/alkemis.jpg"; // Path gambar default
 const books = ref([]);
 const categories = ref([]);
 const selectedCategory = ref("all");
@@ -24,17 +23,17 @@ const fetchCategories = async () => {
 };
 
 const fetchBooks = async () => {
+  loading.value = true;
   try {
-    loading.value = true;
+    let response;
     if (selectedCategory.value === "all") {
-      const response = searchQuery.value
+      response = searchQuery.value
         ? await searchBooks(searchQuery.value)
         : await getBooks();
-      books.value = response.data;
     } else {
-      const response = await getBooksByCategory(selectedCategory.value);
-      books.value = response.data;
+      response = await getBooksByCategory(selectedCategory.value);
     }
+    books.value = response.data;
   } catch (err) {
     error.value = "Failed to load books.";
   } finally {
@@ -66,11 +65,6 @@ onMounted(() => {
 
 <template>
   <div class="mt-20 mx-4 sm:mx-8 md:mx-16 lg:mx-24 mb-20">
-    <!-- Page Title -->
-    <!-- <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-primary">Books Collection</h1>
-    </div> -->
-
     <!-- Search Bar -->
     <div class="flex justify-center mb-6">
       <div class="relative flex-grow max-w-lg">
@@ -121,8 +115,11 @@ onMounted(() => {
     </div>
 
     <!-- Loading & Error Handling -->
-    <div v-if="loading" class="flex justify-center items-center h-64">
-      <Spinner />
+    <div
+      v-if="loading"
+      class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8"
+    >
+      <div v-for="n in 10" :key="n" class="skeleton-card"></div>
     </div>
     <div v-else-if="error" class="text-center text-red-600">{{ error }}</div>
 
@@ -142,10 +139,10 @@ onMounted(() => {
           :key="book.id"
           class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
         >
-          <div class="aspect-w-16 aspect-h-10">
+          <div class="aspect-2-3">
             <RouterLink :to="`/book/${book.id}`">
               <img
-                :src="book.image || defaultBookImage"
+                :src="book.image ? book.image : defaultBookImage"
                 :alt="book.title"
                 class="w-full h-full object-cover"
               />
@@ -158,18 +155,42 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.aspect-w-16 {
+/* Placeholder Loading Effect */
+.skeleton-card {
+  background: #e0e0e0;
+  border-radius: 8px;
   width: 100%;
-  padding-bottom: 140%;
-  position: relative;
+  height: 0;
+  padding-bottom: 150%; /* 2:3 Aspect Ratio */
+  animation: pulse 1.5s infinite;
 }
 
-.aspect-w-16 img {
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Aspect ratio 2:3 */
+.aspect-2-3 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 150%;
+}
+
+.aspect-2-3 img {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
 .hover\:scale-105:hover {
