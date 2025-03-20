@@ -68,11 +68,11 @@
     </div>
 
     <!-- Search Book Modal -->
-    <SearchBookModal
+    <!-- <SearchBookModal
       :isVisible="isSearchModalVisible"
       @close="isSearchModalVisible = false"
       @select="handleBookSelect"
-    />
+    /> -->
   </div>
 </template>
 
@@ -82,7 +82,6 @@ import { useRoute, useRouter } from "vue-router";
 import { getBookById } from "../services/bookService";
 import { borrowBook } from "../services/borrowService";
 import { isAuthenticated, getUserId } from "../services/authService";
-import SearchBookModal from "../components/SearchBookModal.vue";
 
 const route = useRoute();
 const router = useRouter();

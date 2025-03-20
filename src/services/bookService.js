@@ -1,23 +1,9 @@
-import axios from "axios";
+import { publicApi, privateApi } from "../utils/api";
 
-const API_URL = "https://amiwspace.my.id/api/v1/book";
-
-// Fungsi untuk mendapatkan header otorisasi
-const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("No token found");
-  }
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-};
-
+// API Public: Get Books
 export const getBooks = async (page = 1, perPage = 20) => {
   try {
-    const response = await axios.get(API_URL, {
+    const response = await publicApi.get("/book", {
       params: { page, per_page: perPage },
     });
     return response.data;
@@ -27,9 +13,10 @@ export const getBooks = async (page = 1, perPage = 20) => {
   }
 };
 
+// API Public: Get Book by ID
 export const getBookById = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await publicApi.get(`/book/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching book details:", error);
@@ -37,75 +24,54 @@ export const getBookById = async (id) => {
   }
 };
 
+// API Private: Add Book (butuh autentikasi)
 export const addBook = async (formData) => {
   try {
-    const response = await axios.post(API_URL, formData, {
-      ...getAuthHeaders(),
+    const response = await privateApi.post("/book", formData, {
       headers: {
-        ...getAuthHeaders().headers,
         "Content-Type": "multipart/form-data",
         Accept: "application/json",
       },
     });
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error("Server responded with error:", error.response.data);
-    } else {
-      console.error("Error adding book:", error);
-    }
+    console.error("Error adding book:", error);
     throw error;
   }
 };
 
+// API Private: Update Book (butuh autentikasi)
 export const updateBook = async (id, formData) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/${id}?_method=PUT`,
-      formData,
-      {
-        ...getAuthHeaders(),
-        headers: {
-          ...getAuthHeaders().headers,
-          // "Content-Type": "multipart/form-data",
-          // Accept: "application/json",
-        },
-      }
-    );
+    const response = await privateApi.post(`/book/${id}?_method=PUT`, formData);
     return response.data;
   } catch (error) {
-    if (error.response) {
-      console.error("Server responded with error:", error.response.data);
-    } else {
-      console.error("Error updating book:", error);
-    }
+    console.error("Error updating book:", error);
     throw error;
   }
 };
 
+// API Private: Delete Book (butuh autentikasi)
 export const deleteBook = async (id) => {
   try {
-    await axios.delete(`${API_URL}/${id}`, {
-      ...getAuthHeaders(),
-    });
+    await privateApi.delete(`/book/${id}`);
   } catch (error) {
     console.error("Error deleting book:", error);
     throw error;
   }
 };
 
+// API Public: Search Books
 export const searchBooks = async (query) => {
   try {
-    const response = await axios.get(
-      `http://localhost:8000/api/v1/books/search`,
-      {
-        params: {
-          query,
-        },
-      }
-    );
-    return response;
+    console.log("Sending API request to:", `/books/search?query=${query}`);
+    const response = await publicApi.get(`/books/search`, {
+      params: { query },
+    });
+    console.log("Response from API:", response.data);
+    return response.data;
   } catch (error) {
-    throw new Error("Error searching books");
+    console.error("Error fetching search results:", error);
+    throw error;
   }
 };

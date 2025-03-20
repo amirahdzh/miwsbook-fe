@@ -1,91 +1,67 @@
-import axios from "axios";
+import { publicApi, privateApi } from "../utils/api";
 
-const API_URL = "https://amiwspace.my.id/api/v1/category";
-
+// 🔹 Get all categories (Public)
 export const getCategories = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await publicApi.get("/category");
     return response.data;
   } catch (error) {
-    console.error("Error fetching Categories:", error);
+    console.error("Error fetching categories:", error);
     throw error;
   }
 };
 
-export const addCategory = async (Category) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.post(API_URL, Category, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error adding Category:", error);
-    throw error;
-  }
-};
-
-export const updateCategory = async (id, Category) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.put(`${API_URL}/${id}`, Category, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error updating Category:", error);
-    throw error;
-  }
-};
-
-export const deleteCategory = async (id) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.delete(`${API_URL}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error deleting Category:", error);
-    throw error;
-  }
-};
-
-// Fetch a specific Category by ID
+// 🔹 Get a specific category by ID (Public)
 export const fetchCategory = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await publicApi.get(`/category/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching Category:", error);
+    console.error("Error fetching category:", error);
     throw error;
   }
 };
 
+// 🔹 Add a new category (Requires Authentication)
+export const addCategory = async (category) => {
+  try {
+    const response = await privateApi.post("/category", category);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding category:", error);
+    throw error;
+  }
+};
+
+// 🔹 Update an existing category (Requires Authentication)
+export const updateCategory = async (id, category) => {
+  try {
+    const response = await privateApi.put(`/category/${id}`, category);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating category:", error);
+    throw error;
+  }
+};
+
+// 🔹 Delete a category (Requires Authentication)
+export const deleteCategory = async (id) => {
+  try {
+    const response = await privateApi.delete(`/category/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    throw error;
+  }
+};
+
+// 🔹 Get books by category ID (Public)
 export const getBooksByCategory = async (categoryId) => {
   try {
-    const response = await axios.get(
-      `http://localhost:8000/api/v1/category/${categoryId}/books`
-    );
+    const response = await publicApi.get(`/category/${categoryId}/books`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching movies by Category:", error);
+    console.error("Error fetching books by category:", error);
     throw error;
   }
 };
-
-// export const getAllMovies = async () => {
-//   try {
-//     const response = await axios.get('http://localhost:8000/api/v1/movies'); // Adjust the endpoint if necessary
-//     return response.data; // Make sure the response structure is correct
-//   } catch (error) {
-//     console.error("Error fetching all movies:", error);
-//     throw error;
-//   }
-// };

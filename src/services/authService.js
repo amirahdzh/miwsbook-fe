@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const API_URL = "https://amiwspace.my.id/api/v1/auth";
+import { publicApi, privateApi } from "../utils/api";
 
 export const register = async (
   name,
@@ -9,13 +7,13 @@ export const register = async (
   password_confirmation
 ) => {
   try {
-    const response = await axios.post(`${API_URL}/register`, {
+    const response = await publicApi.post("/auth/register", {
       name,
       email,
       password,
       password_confirmation,
     });
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Error during registration:", error);
     throw error;
@@ -24,7 +22,7 @@ export const register = async (
 
 export const login = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, { email, password });
+    const response = await publicApi.post("/auth/login", { email, password });
     const { token, user } = response.data;
 
     if (token) {
@@ -41,6 +39,26 @@ export const login = async (email, password) => {
   }
 };
 
+export const logout = async () => {
+  try {
+    const response = await privateApi.post("/auth/logout");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    return response.data;
+  } catch (error) {
+    console.error("Error during logout:", error);
+    throw error;
+  }
+};
+
+export const isAuthenticated = () => {
+  return !!localStorage.getItem("token");
+};
+
+export const getUserId = () => {
+  return localStorage.getItem("user_id");
+};
+
 // export const regenerateOtp = async (email) => {
 //   try {
 //     const token = localStorage.getItem("token");
@@ -55,26 +73,3 @@ export const login = async (email, password) => {
 //     throw error;
 //   }
 // };
-
-export const logout = async () => {
-  const token = localStorage.getItem("token");
-  const response = await axios.post(
-    `${API_URL}/logout`,
-    {},
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-  return response.data;
-};
-
-export const isAuthenticated = () => {
-  // Check for token or user data in localStorage or sessionStorage
-  return !!localStorage.getItem("token");
-};
-
-// Function to get the current user ID
-export const getUserId = () => {
-  // Implement logic to get user ID, e.g., from localStorage or a Vuex store
-  return localStorage.getItem("user_id");
-};
