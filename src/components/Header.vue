@@ -16,7 +16,7 @@
         <RouterLink to="/books" class="nav-item">
           <button class="nav-button">Library</button>
         </RouterLink>
-        <RouterLink to="/categories" class="nav-item">
+        <RouterLink to="/feeds" class="nav-item">
           <button class="nav-button">Feeds</button>
         </RouterLink>
         <!-- <button @click="handleMyBorrowsClick" class="nav-button">
