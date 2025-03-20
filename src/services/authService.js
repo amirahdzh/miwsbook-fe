@@ -13,7 +13,7 @@ export const register = async (
       password,
       password_confirmation,
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error during registration:", error);
     throw error;

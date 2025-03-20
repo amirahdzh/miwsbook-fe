@@ -4,7 +4,7 @@
     <main class="flex-grow relative z-10">
       <slot />
     </main>
-    <div class="designed-by">Designed by Freepik</div>
+    <!-- <div class="designed-by">Designed by Freepik</div> -->
   </div>
 </template>
 
