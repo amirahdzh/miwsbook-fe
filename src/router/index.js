@@ -5,6 +5,7 @@ import Home from "../views/Home.vue";
 import Books from "../views/Books.vue";
 import BookDetail from "../views/BookDetail.vue";
 import Categories from "../views/Categories.vue";
+import Feeds from "../views/Feeds.vue";
 // import CategoryDetail from "../views/CategoryDetail.vue";
 import BorrowBook from "../views/BorrowBook.vue";
 import BorrowStatus from "../views/BorrowStatus.vue";
@@ -20,8 +21,8 @@ import BookAdd from "../views/owner/book/BookAdd.vue";
 import BookEdit from "../views/owner/book/BookEdit.vue";
 import CategoryCrud from "../views/owner/category/CategoryCrud.vue";
 import BorrowCrud from "../views/owner/borrow/BorrowCrud.vue";
-import RoleCrud from '../views/owner/role/RoleCrud.vue';
-import ManageUsers from '../views/owner/role/ManageUsers.vue';
+import RoleCrud from "../views/owner/role/RoleCrud.vue";
+import ManageUsers from "../views/owner/role/ManageUsers.vue";
 import Dashboard from "../views/owner/Dashboard.vue";
 // import ManageUsers from "../views/owner/role/ManageUsers.vue";
 
@@ -34,6 +35,7 @@ const requireAuth = (to, from, next) => {
 const routes = [
   { path: "/", name: "Home", component: Home },
   { path: "/books", name: "Books", component: Books },
+  { path: "/feeds", name: "Feeds", component: Feeds },
   { path: "/book/:id", name: "BookDetail", component: BookDetail },
   { path: "/categories", name: "Categories", component: Categories },
   // { path: "/category/:id", name: "CategoryDetail", component: CategoryDetail },
@@ -99,14 +101,14 @@ const routes = [
     meta: { layout: "admin" },
   },
   {
-    path: '/owner/roles',
-    name: 'RoleCrud',
+    path: "/owner/roles",
+    name: "RoleCrud",
     component: RoleCrud,
     meta: { layout: "admin" },
   },
   {
-    path: '/owner/roles/manage-users/:roleId',
-    name: 'ManageUsers',
+    path: "/owner/roles/manage-users/:roleId",
+    name: "ManageUsers",
     component: ManageUsers,
     meta: { layout: "admin" },
   },

@@ -1,6 +1,6 @@
 <template>
   <section id="home">
-    <div class="max-w-7xl mx-auto px-6 sm:px-6 md:px-12 lg:px-20 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 lg:px-18 py-20">
       <div class="flex flex-wrap min-w-screen">
         <!-- Bagian Kiri -->
         <div class="w-full self-center px-8 lg:w-1/2 py-20">
@@ -11,7 +11,7 @@
             >
               📖 Welcome to
               <span class="text-primary font-bold font-dellarespira">
-                {{ appName }} &nbsp;
+                {{ appName }}
               </span>
               - My Literary World
             </span>
@@ -23,29 +23,33 @@
           </p>
 
           <!-- CTA Buttons -->
-          <div class="flex gap-4 mt-8">
+          <div class="flex flex-col sm:flex-row gap-4 mt-8">
             <!-- Explore Feeds -->
-            <RouterLink to="/feeds" class="cta-button bg-primary">
-              My Latest Reads
+            <RouterLink
+              to="/feeds"
+              class="cta-button w-full max-w-[200px] font-medium px-5 py-2.5 text-center border-2 border-primary rounded-lg transition-all duration-300 ease-in-out animate-floating"
+            >
+              📖 My Latest Reads
             </RouterLink>
 
             <!-- Browse Collection -->
-            <RouterLink to="/books" class="cta-button bg-primary">
-              My Library
+            <RouterLink
+              to="/books"
+              class="cta-button w-full max-w-[200px] px-5 py-2.5 font-medium text-center border-2 border-primary rounded-lg transition-all duration-300 ease-in-out animate-floating delay-500"
+            >
+              📚 My Library
             </RouterLink>
           </div>
         </div>
 
         <!-- Bagian Kanan (Gambar) -->
         <div class="w-full self-end px-4 lg:w-1/2">
-          <div class="relative mt-10 lg:mt-9 lg:right-0">
-            <div class="relative mt-10 lg:mt-9 lg:right-0 animate-floating">
-              <img
-                src="/img/book.png"
-                alt="Books"
-                class="max-w-full mx-auto hover:scale-105 transition-transform duration-300"
-              />
-            </div>
+          <div class="relative lg:right-0">
+            <img
+              src="/img/book.png"
+              alt="Books"
+              class="max-w-full mx-auto hover:scale-105 transition-transform duration-300 animate-fadeIn"
+            />
           </div>
         </div>
       </div>
@@ -101,23 +105,11 @@ const appName = inject("appName");
 }
 
 /* CTA Button Styling */
-.cta-button {
-  /* text-base; */
-  color: white;
-  padding: 12px 24px;
-  border-radius: 15px;
-  font-weight: bold;
-  transition: all 0.3s ease-in-out;
-  display: inline-block;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
-}
 
 .cta-button:hover {
   /* box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2); */
   transform: translateY(-3px);
+  background: linear-gradient(90deg, #f78da7, #ff5470);
 }
 
 /* Gradient Hover Effect */
@@ -127,5 +119,9 @@ const appName = inject("appName");
 
 .cta-button.bg-primary:hover {
   background: linear-gradient(90deg, #f78da7, #ff5470);
+}
+
+.delay-500 {
+  animation-delay: 500ms;
 }
 </style>
