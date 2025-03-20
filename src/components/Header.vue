@@ -161,9 +161,10 @@
             Dashboard
           </RouterLink>
           <button
-            @click="showConfirmModal"
-            class="block w-full text-left px-4 py-2 text-dark hover:text-primary"
+            @click="logout"
+            class="flex items-center w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 focus:outline-none"
           >
+            <Icon icon="mdi:logout" class="w-6 h-6 mr-2" />
             Logout
           </button>
         </div>
