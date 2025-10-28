@@ -1,31 +1,94 @@
 <template>
-  <div class="dashboard-view p-8 bg-gray-100">
-    <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Total Books -->
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-2">Total Books</h2>
-        <p class="text-4xl font-bold">{{ totals.books }}</p>
-      </div>
+  <div
+    class="dashboard-view p-6 sm:p-8 lg:p-10 bg-gradient-to-b from-slate-50 to-white min-h-[60vh]"
+  >
+    <div class="max-w-7xl mx-auto">
+      <header
+        class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      >
+        <div>
+          <h1 class="text-3xl font-extrabold text-slate-800">Dashboard</h1>
+          <p class="text-sm text-slate-500 mt-1">
+            Overview of books, borrows and categories
+          </p>
+        </div>
+        <div class="text-sm text-slate-600">
+          Last updated: <span class="font-medium">now</span>
+        </div>
+      </header>
 
-      <!-- Total Borrows -->
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-2">Total Borrows</h2>
-        <p class="text-4xl font-bold">{{ totals.borrows }}</p>
-      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          class="card group bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow p-5 flex items-center gap-4"
+        >
+          <div
+            class="icon w-14 h-14 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl"
+          >
+            <Icon icon="mdi:book-open-variant" />
+          </div>
+          <div class="flex-1">
+            <div class="text-xs text-slate-500 uppercase tracking-wide">
+              Total Books
+            </div>
+            <div class="text-3xl font-bold text-slate-800 mt-1">
+              {{ formatNumber(totals.books) }}
+            </div>
+            <div class="text-sm text-slate-400 mt-1">
+              All books in inventory
+            </div>
+          </div>
+        </div>
 
-      <!-- Total Categories -->
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-2">Total Categories</h2>
-        <p class="text-4xl font-bold">{{ totals.categories }}</p>
+        <div
+          class="card group bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow p-5 flex items-center gap-4"
+        >
+          <div
+            class="icon w-14 h-14 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl"
+          >
+            <Icon icon="mdi:calendar-check" />
+          </div>
+          <div class="flex-1">
+            <div class="text-xs text-slate-500 uppercase tracking-wide">
+              Total Borrows
+            </div>
+            <div class="text-3xl font-bold text-slate-800 mt-1">
+              {{ formatNumber(totals.borrows) }}
+            </div>
+            <div class="text-sm text-slate-400 mt-1">
+              Borrow records to date
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card group bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow p-5 flex items-center gap-4"
+        >
+          <div
+            class="icon w-14 h-14 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-2xl"
+          >
+            <Icon icon="mdi:shape" />
+          </div>
+          <div class="flex-1">
+            <div class="text-xs text-slate-500 uppercase tracking-wide">
+              Total Categories
+            </div>
+            <div class="text-3xl font-bold text-slate-800 mt-1">
+              {{ formatNumber(totals.categories) }}
+            </div>
+            <div class="text-sm text-slate-400 mt-1">
+              Distinct book categories
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { Icon } from "@iconify/vue";
 
 const totals = ref({
   books: 0,
@@ -33,29 +96,29 @@ const totals = ref({
   borrows: 0,
 });
 
-const token = localStorage.getItem('token');
+const token = localStorage.getItem("token");
 if (token) {
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 } else {
-  console.error('No token found');
+  // keep silent in UI but log for debugging
+  console.debug("No token found in localStorage");
 }
 
 const fetchAllData = async (endpoint) => {
   let data = [];
   let page = 1;
-  const perPage = 100; // Adjust if necessary
+  const perPage = 100; // adjust as needed for your API
 
   while (true) {
     const response = await axios.get(endpoint, {
-      params: { page, per_page: perPage } // Adjust based on your API
+      params: { page, per_page: perPage },
     });
-    
-    data = data.concat(response.data.data);
 
-    if (response.data.data.length < perPage) {
-      break;
-    }
+    // support both { data: [...] } and { data: { data: [...] } } shapes
+    const chunk = (response.data && response.data.data) || response.data || [];
+    data = data.concat(chunk);
 
+    if (!chunk || chunk.length < perPage) break;
     page++;
   }
 
@@ -64,20 +127,26 @@ const fetchAllData = async (endpoint) => {
 
 const fetchTotals = async () => {
   try {
-    // Fetch all books
-    const books = await fetchAllData('http://localhost:8000/api/v1/book');
+    const books = await fetchAllData("http://localhost:8000/api/v1/book");
     totals.value.books = books.length;
 
-    // Fetch all borrows
-    const borrows = await fetchAllData('http://localhost:8000/api/v1/borrow');
+    const borrows = await fetchAllData("http://localhost:8000/api/v1/borrow");
     totals.value.borrows = borrows.length;
 
-    // Fetch all categories
-    const categories = await fetchAllData('http://localhost:8000/api/v1/category');
+    const categories = await fetchAllData(
+      "http://localhost:8000/api/v1/category"
+    );
     totals.value.categories = categories.length;
-
   } catch (error) {
-    console.error('Error fetching totals:', error);
+    console.error("Error fetching totals:", error);
+  }
+};
+
+const formatNumber = (n) => {
+  try {
+    return new Intl.NumberFormat().format(n || 0);
+  } catch (e) {
+    return String(n || 0);
   }
 };
 
@@ -86,6 +155,10 @@ onMounted(fetchTotals);
 
 <style scoped>
 .dashboard-view {
-  height: 100%;
+  width: 100%;
+}
+
+.card .icon {
+  flex-shrink: 0;
 }
 </style>

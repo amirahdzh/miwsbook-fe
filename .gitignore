@@ -30,3 +30,5 @@ coverage
 *.tsbuildinfo
 
 feature.txt
+
+.env

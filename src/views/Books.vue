@@ -12,6 +12,9 @@ const selectedCategory = ref("all");
 const searchQuery = ref("");
 const loading = ref(true);
 const error = ref(null);
+// Debounce and last-request key to avoid duplicate calls
+let searchDebounceTimeout = null;
+const lastFetchKey = ref("");
 
 const fetchCategories = async () => {
   try {
@@ -25,6 +28,14 @@ const fetchCategories = async () => {
 const fetchBooks = async () => {
   loading.value = true;
   try {
+    // Avoid duplicate requests for same category+query
+    const fetchKey = `${selectedCategory.value}|${searchQuery.value.trim()}`;
+    if (fetchKey === lastFetchKey.value) {
+      // nothing changed since last successful fetch
+      loading.value = false;
+      return;
+    }
+
     let response;
     if (selectedCategory.value === "all") {
       response = searchQuery.value
@@ -33,7 +44,10 @@ const fetchBooks = async () => {
     } else {
       response = await getBooksByCategory(selectedCategory.value);
     }
+
     books.value = response.data;
+    // record successful fetch key
+    lastFetchKey.value = fetchKey;
   } catch (err) {
     error.value = "Failed to load books.";
   } finally {
@@ -48,13 +62,25 @@ const filteredCategories = computed(() =>
 
 // Update kategori & ambil data
 const filterBooks = (categoryId) => {
+  // prevent re-fetch when clicking the already-selected category
+  if (selectedCategory.value === categoryId) return;
+
   selectedCategory.value = categoryId;
+  // clear lastFetchKey so we allow fetch even if query same
+  lastFetchKey.value = "";
   fetchBooks();
 };
 
-// Cari buku berdasarkan input
+// Cari buku berdasarkan input with debounce
 const handleSearch = () => {
-  fetchBooks();
+  // clear recorded last fetch so a new search forces fetch
+  lastFetchKey.value = "";
+
+  clearTimeout(searchDebounceTimeout);
+  searchDebounceTimeout = setTimeout(() => {
+    // when user stops typing for 300ms, fetch
+    fetchBooks();
+  }, 300);
 };
 
 onMounted(() => {

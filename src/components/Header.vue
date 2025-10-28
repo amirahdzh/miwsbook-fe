@@ -128,11 +128,11 @@
           Books
         </RouterLink>
         <RouterLink
-          to="/categories"
+          to="/feeds"
           @click="toggleMenu"
           class="block text-base text-dark hover:text-primary"
         >
-          Categories
+          Feeds
         </RouterLink>
         <RouterLink
           v-if="isAuthenticated"

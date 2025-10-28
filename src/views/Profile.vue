@@ -117,6 +117,7 @@ const profile = ref({
 
 const getProfile = async () => {
   try {
+    // const response = await axios.get("https://amiwspace.my.id/api/v1/me", {
     const response = await axios.get("http://localhost:8000/api/v1/me", {
       headers: {
         Accept: "application/json",
@@ -145,6 +146,7 @@ const handleUpdateProfile = async () => {
 
     const response = await axios.post(
       "http://localhost:8000/api/v1/profile",
+      // "https://amiwspace.my.id/api/v1/profile",
       formData,
       {
         headers: {
