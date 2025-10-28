@@ -44,9 +44,15 @@
           </div>
 
           <!-- Inline hero search (press / to focus) -->
-          <div id="hero-search" ref="searchContainer" class="mt-6 w-full max-w-lg">
+          <div
+            id="hero-search"
+            ref="searchContainer"
+            class="mt-6 w-full max-w-lg"
+          >
             <AutocompleteSearch />
-            <div class="mt-2 text-xs text-slate-400">Press <kbd>/</kbd> to focus search</div>
+            <div class="mt-2 text-xs text-slate-400">
+              Press <kbd>/</kbd> to focus search
+            </div>
           </div>
         </div>
 
