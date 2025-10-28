@@ -27,7 +27,8 @@
             <!-- Explore Feeds -->
             <RouterLink
               to="/feeds"
-              class="cta-button w-full max-w-[200px] font-medium px-5 py-2.5 text-center border-2 border-primary rounded-lg transition-all duration-300 ease-in-out animate-floating"
+              aria-label="Open My Latest Reads"
+              class="cta-button w-full max-w-[200px] font-medium px-5 py-2.5 text-center border-2 border-primary rounded-lg transition-all duration-300 ease-in-out animate-floating focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               📖 My Latest Reads
             </RouterLink>
@@ -35,10 +36,17 @@
             <!-- Browse Collection -->
             <RouterLink
               to="/books"
-              class="cta-button w-full max-w-[200px] px-5 py-2.5 font-medium text-center border-2 border-primary rounded-lg transition-all duration-300 ease-in-out animate-floating delay-500"
+              aria-label="Browse My Library"
+              class="cta-button w-full max-w-[200px] px-5 py-2.5 font-medium text-center border-2 border-primary rounded-lg transition-all duration-300 ease-in-out animate-floating delay-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               📚 My Library
             </RouterLink>
+          </div>
+
+          <!-- Inline hero search (press / to focus) -->
+          <div id="hero-search" ref="searchContainer" class="mt-6 w-full max-w-lg">
+            <AutocompleteSearch />
+            <div class="mt-2 text-xs text-slate-400">Press <kbd>/</kbd> to focus search</div>
           </div>
         </div>
 
@@ -47,7 +55,8 @@
           <div class="relative lg:right-0">
             <img
               src="/img/book.png"
-              alt="Books"
+              alt="Illustration of stacked books and an open book — reading concept"
+              loading="lazy"
               class="max-w-full mx-auto hover:scale-105 transition-transform duration-300 animate-fadeIn"
             />
           </div>
@@ -64,10 +73,36 @@
 </template>
 
 <script setup>
-import { inject } from "vue";
+import { inject, ref, onMounted, onBeforeUnmount } from "vue";
 import AutocompleteSearch from "@/components/AutoCompleteSearch.vue"; // Import komponen
 
 const appName = inject("appName");
+const searchContainer = ref(null);
+
+const focusHeroSearch = () => {
+  const el = searchContainer.value;
+  if (!el) return;
+  // find the first input or combobox inside the search component
+  const input = el.querySelector('input, [role="combobox"], textarea');
+  if (input) input.focus();
+};
+
+const onKeyDown = (e) => {
+  // ignore when typing in inputs or textareas
+  const activeTag = document.activeElement && document.activeElement.tagName;
+  if (e.key === "/" && activeTag !== "INPUT" && activeTag !== "TEXTAREA") {
+    e.preventDefault();
+    focusHeroSearch();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("keydown", onKeyDown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", onKeyDown);
+});
 </script>
 
 <style scoped>
