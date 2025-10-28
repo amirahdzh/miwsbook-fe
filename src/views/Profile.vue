@@ -106,7 +106,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
+import { publicApi, privateApi } from "@/utils/api";
 
 const router = useRouter();
 const user = ref({});
@@ -117,13 +117,8 @@ const profile = ref({
 
 const getProfile = async () => {
   try {
-    // const response = await axios.get("https://amiwspace.my.id/api/v1/me", {
-    const response = await axios.get("http://localhost:8000/api/v1/me", {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    // use centralized axios instance with dynamic base URL
+    const response = await privateApi.get("/me");
     const { user: apiUser } = response.data;
     profile.value = {
       age: apiUser.profile ? apiUser.profile.age : "",
@@ -144,17 +139,9 @@ const handleUpdateProfile = async () => {
     formData.append("age", profile.value.age);
     formData.append("biodata", profile.value.biodata);
 
-    const response = await axios.post(
-      "http://localhost:8000/api/v1/profile",
-      // "https://amiwspace.my.id/api/v1/profile",
-      formData,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await privateApi.post("/profile", formData, {
+      headers: { Accept: "application/json" },
+    });
 
     alert("Profile updated successfully!");
     // Optional: Reload profile data

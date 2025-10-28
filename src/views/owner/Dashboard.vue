@@ -87,7 +87,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import { privateApi } from "@/utils/api";
 import { Icon } from "@iconify/vue";
 
 const totals = ref({
@@ -96,21 +96,13 @@ const totals = ref({
   borrows: 0,
 });
 
-const token = localStorage.getItem("token");
-if (token) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-} else {
-  // keep silent in UI but log for debugging
-  console.debug("No token found in localStorage");
-}
-
-const fetchAllData = async (endpoint) => {
+const fetchAllData = async (path) => {
   let data = [];
   let page = 1;
   const perPage = 100; // adjust as needed for your API
 
   while (true) {
-    const response = await axios.get(endpoint, {
+    const response = await privateApi.get(path, {
       params: { page, per_page: perPage },
     });
 
@@ -127,15 +119,11 @@ const fetchAllData = async (endpoint) => {
 
 const fetchTotals = async () => {
   try {
-    const books = await fetchAllData("http://localhost:8000/api/v1/book");
+    const books = await fetchAllData("/book");
     totals.value.books = books.length;
-
-    const borrows = await fetchAllData("http://localhost:8000/api/v1/borrow");
+    const borrows = await fetchAllData("/borrow");
     totals.value.borrows = borrows.length;
-
-    const categories = await fetchAllData(
-      "http://localhost:8000/api/v1/category"
-    );
+    const categories = await fetchAllData("/category");
     totals.value.categories = categories.length;
   } catch (error) {
     console.error("Error fetching totals:", error);

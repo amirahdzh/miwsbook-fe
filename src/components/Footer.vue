@@ -19,7 +19,7 @@
             <Icon icon="mdi:facebook" class="w-6 h-6" />
           </a>
           <a
-            href="https://amiwspace.my.id/"
+            href="https://amiw.dev/"
             target="_blank"
             class="text-gray-400 hover:text-primary transition-colors"
           >
